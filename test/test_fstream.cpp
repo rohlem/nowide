@@ -9,6 +9,53 @@
 #  pragma warning(disable : 4996)
 #endif
 
+namespace nw = boost::nowide;
+
+template<typename T>
+void testOpenWriteRead(const T& name)
+{
+    nw::ofstream fo(name);
+    TEST(fo);
+    fo << "test2";
+    fo.close();
+    nw::ifstream fi(name);
+    TEST(fi);
+    std::string tmp;
+    fi >> tmp;
+    TEST(tmp == "test2");
+    fi.close();
+    fo.open(name);
+    TEST(fo);
+    fo << "test";
+    fo.close();
+    fi.open(name);
+    TEST(fi);
+    fi >> tmp;
+    TEST(tmp == "test");
+}
+template<typename T>
+void testOpenWriteReadFstream(const T& name)
+{
+    nw::fstream fo(name);
+    TEST(fo);
+    fo << "test2";
+    fo.close();
+    nw::fstream fi(name);
+    TEST(fi);
+    std::string tmp;
+    fi >> tmp;
+    TEST(tmp == "test2");
+    fi.close();
+    fo.open(name);
+    TEST(fo);
+    fo.seekg(0);
+    fo << "test ";
+    fo.close();
+    fi.open(name);
+    TEST(fi);
+    fi >> tmp;
+    TEST(tmp == "test");
+}
 
 int main()
 {
@@ -19,7 +66,6 @@ int main()
 #endif    
 
     try {
-        namespace nw=boost::nowide;
         
         std::cout << "Testing fstream" << std::endl;
         {
@@ -79,6 +125,12 @@ int main()
                 TEST(tmp=="test");
                 fi.close();
             }
+            #endif
+            #ifdef BOOST_WINDOWS
+            testOpenWriteRead(wexample);
+            testOpenWriteReadFstream(wexample);
+            testOpenWriteRead<std::wstring>(wexample);
+            testOpenWriteReadFstream<std::wstring>(wexample);
             #endif
             {
                 nw::ifstream fi(example,std::ios::binary);

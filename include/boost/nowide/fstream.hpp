@@ -65,6 +65,38 @@ namespace nowide {
             std::ios::rdbuf(buf_.get());
             open(file_name,mode);
         }
+        
+#ifdef BOOST_WINDOWS
+        explicit basic_ifstream(wchar_t const *file_name,std::ios_base::openmode mode = std::ios_base::in) : 
+            internal_stream_type(0) 
+        {
+            buf_.reset(new internal_buffer_type());
+            std::ios::rdbuf(buf_.get());
+            open(file_name,mode);
+        }
+
+        explicit basic_ifstream(std::wstring const &file_name,std::ios_base::openmode mode = std::ios_base::in) : 
+            internal_stream_type(0) 
+        {
+            buf_.reset(new internal_buffer_type());
+            std::ios::rdbuf(buf_.get());
+            open(file_name,mode);
+        }
+        
+        void open(std::wstring const &file_name,std::ios_base::openmode mode = std::ios_base::in)
+        {
+            open(file_name.c_str(),mode);
+        }
+        void open(wchar_t const *file_name,std::ios_base::openmode mode = std::ios_base::in)
+        {
+            if(!buf_->open(file_name,mode | std::ios_base::in)) {
+                this->setstate(std::ios_base::failbit);
+            }
+            else {
+                this->clear();
+            }
+        }
+#endif
 
         
         void open(std::string const &file_name,std::ios_base::openmode mode = std::ios_base::in)
@@ -140,6 +172,39 @@ namespace nowide {
             std::ios::rdbuf(buf_.get());
             open(file_name,mode);
         }
+
+#ifdef BOOST_WINDOWS
+        explicit basic_ofstream(wchar_t const *file_name,std::ios_base::openmode mode = std::ios_base::out) : 
+            internal_stream_type(0) 
+        {
+            buf_.reset(new internal_buffer_type());
+            std::ios::rdbuf(buf_.get());
+            open(file_name,mode);
+        }
+
+        explicit basic_ofstream(std::wstring const &file_name,std::ios_base::openmode mode = std::ios_base::out) : 
+            internal_stream_type(0) 
+        {
+            buf_.reset(new internal_buffer_type());
+            std::ios::rdbuf(buf_.get());
+            open(file_name,mode);
+        }
+        
+        void open(std::wstring const &file_name,std::ios_base::openmode mode = std::ios_base::out)
+        {
+            open(file_name.c_str(),mode);
+        }
+        void open(wchar_t const *file_name,std::ios_base::openmode mode = std::ios_base::out)
+        {
+            if(!buf_->open(file_name,mode | std::ios_base::out)) {
+                this->setstate(std::ios_base::failbit);
+            }
+            else {
+                this->clear();
+            }
+        }
+#endif
+
         void open(std::string const &file_name,std::ios_base::openmode mode = std::ios_base::out)
         {
             open(file_name.c_str(),mode);
@@ -213,6 +278,38 @@ namespace nowide {
             std::ios::rdbuf(buf_.get());
             open(file_name,mode);
         }
+
+#ifdef BOOST_WINDOWS
+        explicit basic_fstream(wchar_t const *file_name,std::ios_base::openmode mode = std::ios_base::out | std::ios_base::in) : 
+            internal_stream_type(0) 
+        {
+            buf_.reset(new internal_buffer_type());
+            std::ios::rdbuf(buf_.get());
+            open(file_name,mode);
+        }
+
+        explicit basic_fstream(std::wstring const &file_name,std::ios_base::openmode mode = std::ios_base::out | std::ios_base::in) : 
+            internal_stream_type(0) 
+        {
+            buf_.reset(new internal_buffer_type());
+            std::ios::rdbuf(buf_.get());
+            open(file_name,mode);
+        }
+        
+        void open(std::wstring const &file_name,std::ios_base::openmode mode = std::ios_base::out | std::ios_base::in)
+        {
+            open(file_name.c_str(),mode);
+        }
+        void open(wchar_t const *file_name,std::ios_base::openmode mode = std::ios_base::out | std::ios_base::in)
+        {
+            if(!buf_->open(file_name,mode)) {
+                this->setstate(std::ios_base::failbit);
+            }
+            else {
+                this->clear();
+            }
+        }
+#endif
         void open(std::string const &file_name,std::ios_base::openmode mode = std::ios_base::out | std::ios_base::out)
         {
             open(file_name.c_str(),mode);
