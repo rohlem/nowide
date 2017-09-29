@@ -35,7 +35,14 @@ int main()
         TEST(boost::nowide::getenv("BOOST_TEST2"));
         TEST(boost::nowide::getenv("BOOST_TEST_INVALID")==0);
         TEST(boost::nowide::getenv("BOOST_TEST2")==example + "x");
-        
+        char penv2[256] = {0};
+        const char* sPenv2 = "BOOST_TEST1SOMEGARBAGE=";
+        strncpy(penv2, sPenv2, sizeof(penv2) - 1);
+        penv2[strlen("BOOST_TEST1")] = '\0';
+        TEST(boost::nowide::putenv(penv2)==-1);
+        TEST(boost::nowide::getenv("BOOST_TEST1"));
+        TEST(boost::nowide::getenv("BOOST_TEST1")==example);
+
         std::cout << "Ok" << std::endl;
         return 0;
     }
