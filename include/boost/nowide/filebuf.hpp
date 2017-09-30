@@ -14,6 +14,13 @@
 #include <fstream>
 #include <streambuf>
 #include <stdio.h>
+#ifdef BOOST_NOWIDE_USE_FILESYSTEM
+#ifdef BOOST_WINDOWS
+#include <boost/filesystem/path.hpp>
+#else
+#include <boost/filesystem/fstream.hpp>
+#endif
+#endif
 
 #ifdef BOOST_MSVC
 #  pragma warning(push)
@@ -24,8 +31,14 @@
 namespace boost {
 namespace nowide {
 #if !defined(BOOST_WINDOWS) && !defined(BOOST_NOWIDE_FSTREAM_TESTS) && !defined(BOOST_NOWIDE_DOXYGEN)
-    using std::basic_filebuf;
-    using std::filebuf;
+#ifdef BOOST_NOWIDE_USE_FILESYSTEM
+#define BOOST_NOWIDE_FS_NS boost::filesystem
+#else
+#define BOOST_NOWIDE_FS_NS std
+#endif
+    using BOOST_NOWIDE_FS_NS::basic_filebuf;
+    using BOOST_NOWIDE_FS_NS::filebuf;
+#undef BOOST_NOWIDE_FS_NS
 #else // Windows
     
     ///
@@ -125,6 +138,12 @@ namespace nowide {
             }
             file_ = f;
             return this;
+        }
+#endif
+#ifdef BOOST_NOWIDE_USE_FILESYSTEM
+        basic_filebuf *open(boost::filesystem::path const &s, std::ios_base::openmode mode)
+        {
+            return open(s.c_str(), mode);
         }
 #endif
         ///
