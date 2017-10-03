@@ -14,6 +14,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 set(NOWIDE_BUILD_SHARED ON)
 set(NOWIDE_BUILD_STATIC ON)
+set(NOWIDE_SYSTEM_INCLUDE OFF)
 add_subdirectory(src)
 enable_testing()
 add_subdirectory(test)
